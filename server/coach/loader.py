@@ -50,6 +50,7 @@ class Coach:
             "id": self.id,
             "name": self.name,
             "tagline": self.profile.get("tagline", ""),
+            "subtitle": self.profile.get("subtitle", ""),
             "short_bio": self.profile.get("short_bio", ""),
             "disclaimer": self.profile.get("disclaimer",
                 "AI simulation based on publicly available material. "
