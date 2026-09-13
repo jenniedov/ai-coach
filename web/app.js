@@ -38,6 +38,7 @@ function idleStatus() {
 
 function addMsg(role, text, cls) {
   els.empty.hidden = true;
+  if (role === 'me') els.transcript.querySelectorAll('.cursor').forEach(n => n.classList.remove('cursor'));
   const div = document.createElement('div');
   div.className = `msg ${cls || role}`;
   const who = document.createElement('div'); who.className = 'who-label';

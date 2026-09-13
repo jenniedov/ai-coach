@@ -259,11 +259,12 @@ class LatencyObserver(BaseObserver):
     def start_typed_turn(self):
         self.turn_id += 1
         now = time.perf_counter()
-        self.turn = {"id": self.turn_id, "speech_end": now, "vad_speech_end": now, "typed": True}
+        self.turn = {"id": self.turn_id, "speech_end": now, "vad_speech_end": now, "stt_done": now, "typed": True}
 
     def _ms(self, a: str, b: str):
         if a in self.turn and b in self.turn:
-            return round((self.turn[b] - self.turn[a]) * 1000)
+            v = round((self.turn[b] - self.turn[a]) * 1000)
+            return v if v >= 0 else None  # out-of-order frames (typed turns, interruptions) -> not a real number
         return None
 
     def summary(self) -> dict:
