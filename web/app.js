@@ -86,7 +86,7 @@ function renderCoachList() {
     b.innerHTML = `<span class="mini-avatar"></span><span><div class="coach-item-name"></div><div class="coach-item-sub"></div></span>`;
     b.querySelector('.mini-avatar').textContent = initials(c.name);
     b.querySelector('.coach-item-name').textContent = c.name;
-    b.querySelector('.coach-item-sub').textContent = `${c.n_sources} sources · ${c.n_chunks} notes`;
+    b.querySelector('.coach-item-sub').textContent = c.n_chunks ? `${c.n_sources} sources · ${c.n_chunks} notes` : 'Profile coming soon';
     b.addEventListener('click', () => { if (inCall) return; selectCoach(c.id); if (narrow()) setNav(false); });
     els.coachList.appendChild(b);
   }

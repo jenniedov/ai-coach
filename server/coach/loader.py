@@ -158,12 +158,17 @@ def load_all(coaches_dir: Path) -> dict[str, Coach]:
     coaches: dict[str, Coach] = {}
     if not coaches_dir.exists():
         return coaches
+    loaded: list[Coach] = []
     for d in sorted(coaches_dir.iterdir()):
         if d.is_dir() and not d.name.startswith((".", "_")):
             try:
                 c = load_coach(d)
                 if c:
-                    coaches[c.id] = c
+                    loaded.append(c)
             except Exception as e:  # noqa: BLE001
                 log.exception("Failed to load coach %s: %s", d, e)
+    # profile.json "order" (lower first) lets you arrange the sidebar; unordered coaches go last, by name
+    loaded.sort(key=lambda c: (c.profile.get("order", 100), c.name.lower()))
+    for c in loaded:
+        coaches[c.id] = c
     return coaches
