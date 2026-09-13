@@ -1,0 +1,17 @@
+.env
+.venv/
+models/
+coaches/*/.index/
+voices/*/reference*.wav
+voices/*/*.safetensors
+__pycache__/
+*.pyc
+.pytest_cache/
+*.log
+voices/emma_grede_sample/
+tests/out/
+design/*.html
+.impeccable/
+coaches/*
+!coaches/README.md
+!coaches/example_coach/
