@@ -21,15 +21,15 @@ pytestmark = pytest.mark.skipif(not _up(), reason="server not running")
 
 def test_config():
     c = httpx.get(f"{BASE}/api/config", timeout=10).json()
-    assert any(x["id"] == "emma_grede" for x in c["coaches"])
+    assert c["coaches"]
     assert {"kokoro", "pocket", "breeze", "macos_say"} <= {e["id"] for e in c["tts_engines"]}
-    assert any(v["id"] == "custom:emma_grede_sample" for v in c["voices"])
     assert "AI simulation" in c["disclaimer"]
 
 
 def test_retrieve():
-    r = httpx.get(f"{BASE}/api/retrieve", params={"coach": "emma_grede", "q": "should I hire for attitude or experience"}, timeout=10).json()
-    assert r["results"] and any("attitude" in x["text"].lower() for x in r["results"])
+    coach = httpx.get(f"{BASE}/api/config", timeout=10).json()["coaches"][0]["id"]
+    r = httpx.get(f"{BASE}/api/retrieve", params={"coach": coach, "q": "should I hire for attitude or experience"}, timeout=10).json()
+    assert r["results"]
     assert r["ms"] < 500
 
 

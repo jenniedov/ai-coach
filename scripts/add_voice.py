@@ -42,6 +42,8 @@ def main():
     if not a.i_have_permission:
         sys.exit("Refusing: pass --i-have-permission to attest you may clone this voice. "
                  "Do not clone voices of people who haven't agreed to it.")
+    print("Reminder: the segment must contain ONLY the coach speaking (no interviewer, no music, no crosstalk).\n"
+          "Check the transcript printed below; if it reads like two people, pick a different --start/--duration.")
     if not (3 <= a.duration <= 30):
         sys.exit("--duration should be between 3 and 30 seconds (5-20 s is ideal)")
 

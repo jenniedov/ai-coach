@@ -89,6 +89,7 @@ async def synth_question(base: str, text: str) -> np.ndarray:
 async def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--base", default="http://127.0.0.1:3000")
+    ap.add_argument("--coach", default=None, help="coach id (default: the first coach the server lists)")
     ap.add_argument("--question", default="I'm thinking about starting three businesses at once. What would you tell me?")
     ap.add_argument("--typed", help="send a typed turn instead of audio")
     ap.add_argument("--tts-engine", default=None)
@@ -102,6 +103,11 @@ async def main():
     a = ap.parse_args()
     out_dir = Path(a.out); out_dir.mkdir(parents=True, exist_ok=True)
 
+    if not a.coach:
+        async with httpx.AsyncClient(timeout=30) as c:
+            cfg = (await c.get(f"{a.base}/api/config")).json()
+        a.coach = cfg["coaches"][0]["id"]
+        print(f"coach: {a.coach}")
     print(f"synthesizing question audio via {a.base}/api/tts ...")
     q_audio = await synth_question(a.base, a.question)
     q2_audio = await synth_question(a.base, a.second_question) if a.barge_in_after else None
@@ -185,7 +191,7 @@ async def main():
 
     offer = await pc.createOffer()
     await pc.setLocalDescription(offer)
-    request_data = {k: v for k, v in {"coach": "emma_grede", "voice": a.voice, "tts_engine": a.tts_engine,
+    request_data = {k: v for k, v in {"coach": a.coach, "voice": a.voice, "tts_engine": a.tts_engine,
                                       "llm_model": a.llm_model, "turn_mode": a.turn_mode, "barge_in": True}.items() if v is not None}
     async with httpx.AsyncClient(timeout=30) as c:
         r = await c.post(f"{a.base}/api/offer", json={"sdp": pc.localDescription.sdp, "type": pc.localDescription.type,
